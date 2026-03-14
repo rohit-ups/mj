@@ -1,4 +1,4 @@
-import { Waves, Calendar, Users, Settings, LogOut, Menu, X, LayoutDashboard } from "lucide-react";
+import { Waves, Calendar, Users, Settings, LogOut, Menu, X, LayoutDashboard, Package, Home, HelpCircle, FileText } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { clsx, type ClassValue } from "clsx";
@@ -8,12 +8,31 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-const navItems = [
-  { name: "Dashboard", href: "/", icon: LayoutDashboard },
-  { name: "Bookings", href: "/bookings", icon: Calendar },
-  { name: "Batches", href: "/batches", icon: Users },
-  { name: "Roster", href: "/roster", icon: Users },
-  { name: "Settings", href: "/settings", icon: Settings },
+const sections = [
+  {
+    title: "Operations",
+    items: [
+      { name: "Dashboard", href: "/", icon: LayoutDashboard },
+      { name: "Bookings", href: "/bookings", icon: Calendar },
+      { name: "Batches", href: "/batches", icon: Users },
+      { name: "Roster", href: "/roster", icon: Users },
+    ]
+  },
+  {
+    title: "Management",
+    items: [
+      { name: "Packages", href: "/packages", icon: Package },
+      { name: "Properties", href: "/properties", icon: Home },
+      { name: "Instructors", href: "/instructors", icon: Users },
+    ]
+  },
+  {
+    title: "Content",
+    items: [
+      { name: "FAQs", href: "/faqs", icon: HelpCircle },
+      { name: "Site Settings", href: "/settings", icon: Settings },
+    ]
+  }
 ];
 
 export function Sidebar() {
@@ -50,26 +69,35 @@ export function Sidebar() {
           <span className="font-display text-xl tracking-tighter uppercase">Admin</span>
         </div>
 
-        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.name}
-                to={item.href}
-                onClick={() => setIsOpen(false)}
-                className={cn(
-                  "flex items-center gap-3 px-4 py-3 font-display text-sm uppercase tracking-widest transition-all border-2",
-                  isActive
-                    ? "bg-black text-white border-black"
-                    : "border-transparent hover:bg-mj-accent hover:text-white hover:border-black"
-                )}
-              >
-                <item.icon className="w-4 h-4" />
-                {item.name}
-              </Link>
-            );
-          })}
+        <nav className="flex-1 p-4 space-y-6 overflow-y-auto">
+          {sections.map((section) => (
+            <div key={section.title} className="space-y-2">
+              <h3 className="px-4 font-mono text-[10px] font-bold uppercase tracking-[0.2em] opacity-40">
+                {section.title}
+              </h3>
+              <div className="space-y-1">
+                {section.items.map((item) => {
+                  const isActive = pathname === item.href;
+                  return (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      onClick={() => setIsOpen(false)}
+                      className={cn(
+                        "flex items-center gap-3 px-4 py-2 font-display text-xs uppercase tracking-widest transition-all border-2",
+                        isActive
+                          ? "bg-black text-white border-black"
+                          : "border-transparent hover:bg-mj-accent hover:text-white hover:border-black"
+                      )}
+                    >
+                      <item.icon className="w-4 h-4" />
+                      {item.name}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
         <div className="p-4 border-t-2 border-black">

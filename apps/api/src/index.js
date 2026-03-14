@@ -19,6 +19,7 @@ fastify.get('/health', async (request, reply) => {
 // Register routes
 fastify.register(require('./routes/bookings'), { prefix: '/bookings' });
 fastify.register(require('./routes/webhooks'), { prefix: '/webhooks' });
+fastify.register(require('./routes/management'), { prefix: '/management' });
 
 // Start server
 const start = async () => {

@@ -17,6 +17,21 @@ import BatchesPage from './pages/BatchesPage';
 import RosterPage from './pages/RosterPage';
 import BookingsPage from './pages/BookingsPage';
 import BookingDetailPage from './pages/BookingDetailPage';
+import PackagesPage from './pages/PackagesPage';
+import PropertiesPage from './pages/PropertiesPage';
+import InstructorsPage from './pages/InstructorsPage';
+import FAQsPage from './pages/FAQsPage';
+
+// Placeholder for new management pages
+const PlaceholderPage = ({ title }: { title: string }) => (
+  <div className="p-8 space-y-8">
+    <h1 className="font-display text-5xl uppercase tracking-tighter">{title}</h1>
+    <p className="font-display text-sm uppercase tracking-widest opacity-60">Management interface for {title.toLowerCase()} coming soon.</p>
+    <div className="border-4 border-dashed border-black/10 h-64 flex items-center justify-center font-mono text-xs uppercase opacity-20">
+      Section Under Construction
+    </div>
+  </div>
+);
 
 const DashboardLayout = () => {
   return (
@@ -43,11 +58,15 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <Route path="bookings/:id" element={<BookingDetailPage />} />
           <Route path="batches" element={<BatchesPage />} />
           <Route path="roster" element={<RosterPage />} />
-          <Route path="settings" element={
-            <div className="p-8 text-center uppercase font-display text-2xl opacity-40 mt-20">
-              Settings coming soon
-            </div>
-          } />
+          
+          {/* Management Routes */}
+          <Route path="packages" element={<PackagesPage />} />
+          <Route path="properties" element={<PropertiesPage />} />
+          <Route path="instructors" element={<InstructorsPage />} />
+          
+          {/* Content Routes */}
+          <Route path="faqs" element={<FAQsPage />} />
+          <Route path="settings" element={<PlaceholderPage title="Site Settings" />} />
         </Route>
       </Routes>
     </BrowserRouter>
