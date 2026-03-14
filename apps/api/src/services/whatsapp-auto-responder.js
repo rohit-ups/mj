@@ -3,7 +3,7 @@
  * Handles inbound FAQ messages based on keyword matching.
  */
 
-const FAQ_RESPONSES: Record<string, string> = {
+const FAQ_RESPONSES = {
   price: "Mambo Jambo Packages:\n- 3 Day: ₹6,000 (2 nights stay)\n- 5 Day: ₹9,700 (4 nights stay)\n- 7 Day: ₹13,700 (6 nights stay)\n- 10 Day: ₹18,700 (9 nights stay)\nAll packages include surf lessons, AC dorm bed, and a heavy brunch! 🏄‍♂️🍳",
   pricing: "Mambo Jambo Packages:\n- 3 Day: ₹6,000 (2 nights stay)\n- 5 Day: ₹9,700 (4 nights stay)\n- 7 Day: ₹13,700 (6 nights stay)\n- 10 Day: ₹18,700 (9 nights stay)\nAll packages include surf lessons, AC dorm bed, and a heavy brunch! 🏄‍♂️🍳",
   
@@ -22,7 +22,7 @@ const FAQ_RESPONSES: Record<string, string> = {
   contact: "You can reach us at (+91) 7022129460 or email us at mambojambosurf@gmail.com 🤙",
 };
 
-export function getAutoResponse(message: string): string {
+function getAutoResponse(message) {
   const normalizedMessage = message.toLowerCase();
   
   for (const [keyword, response] of Object.entries(FAQ_RESPONSES)) {
@@ -33,3 +33,22 @@ export function getAutoResponse(message: string): string {
   
   return "Thanks for reaching out to Mambo Jambo Surf School! 🏄‍♂️\n\nTry asking about 'price', 'timing', 'location', 'swimming', or 'food'.\n\nAlternatively, you can reach our team directly at (+91) 7022129460. Slow down and catch a breath!";
 }
+
+async function handleIncomingWhatsAppMessage(msg) {
+  const from = msg.from; // Sender's phone number
+  const messageText = msg.text?.body || "";
+  
+  if (!messageText) return;
+
+  const responseText = getAutoResponse(messageText);
+
+  console.log(`Auto-replying to ${from}: ${responseText.substring(0, 50)}...`);
+
+  // TODO: Implement actual Meta API call to send the message back
+  // This requires WHATSAPP_ACCESS_TOKEN and WHATSAPP_PHONE_NUMBER_ID
+}
+
+module.exports = {
+  getAutoResponse,
+  handleIncomingWhatsAppMessage
+};

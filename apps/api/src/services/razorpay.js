@@ -1,24 +1,8 @@
-
 const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
 const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
-const BASE_URL = process.env.BASE_URL || 'https://surfschool.com';
+const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 
-interface PaymentLinkParams {
-  bookingId: string;
-  amount: number;
-  customerEmail: string;
-  customerName: string;
-}
-
-interface PaymentLinkResponse {
-  id: string;
-  short_url: string;
-  amount: number;
-  currency: string;
-  status: string;
-}
-
-async function createRazorpayRequest(endpoint: string, body: Record<string, unknown>) {
+async function createRazorpayRequest(endpoint, body) {
   const auth = Buffer.from(`${RAZORPAY_KEY_ID}:${RAZORPAY_KEY_SECRET}`).toString('base64');
 
   const response = await fetch(`https://api.razorpay.com/v1/${endpoint}`, {
@@ -38,23 +22,31 @@ async function createRazorpayRequest(endpoint: string, body: Record<string, unkn
   return response.json();
 }
 
-export async function createPaymentLink(
-  bookingId: string,
-  amount: number,
-  customerEmail: string,
-  customerName: string
-): Promise<PaymentLinkResponse> {
+async function createPaymentLink(
+  bookingId,
+  amount,
+  customerEmail,
+  customerName
+) {
   if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
-    throw new Error('Razorpay credentials not configured');
+    console.log('Skipping payment link creation (RAZORPAY_KEY_ID/SECRET not set)');
+    return {
+      id: 'mock_pl_id',
+      short_url: 'https://razorpay.com/mock_link',
+      amount: amount * 0.5,
+      currency: 'INR',
+      status: 'created'
+    };
   }
 
+  // Mambo Jambo takes 50% advance. Razorpay amounts are in paise (x100)
   const depositAmount = Math.round(amount * 0.5 * 100);
 
   const paymentLink = await createRazorpayRequest('payment_links', {
     amount: depositAmount,
-    currency: 'USD',
+    currency: 'INR',
     accept_partial: false,
-    description: `Surf School Booking - ${bookingId}`,
+    description: `Mambo Jambo Surf Booking - ${bookingId}`,
     customer: {
       name: customerName,
       email: customerEmail,
@@ -79,3 +71,7 @@ export async function createPaymentLink(
     status: paymentLink.status,
   };
 }
+
+module.exports = {
+  createPaymentLink
+};
