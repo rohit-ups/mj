@@ -1,4 +1,3 @@
-"use client";
 
 import { useState } from "react";
 import { 
@@ -11,7 +10,7 @@ import {
   ArrowRight,
   User
 } from "lucide-react";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 

@@ -1,6 +1,5 @@
-"use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   Calendar as CalendarIcon, 
   ChevronLeft, 
@@ -61,6 +60,15 @@ const rosterData = {
 
 export default function RosterPage() {
   const [selectedDate, setSelectedDate] = useState("2026-03-14");
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return <div className="p-8">Loading Roster...</div>;
+  }
   
   const batches = rosterData[selectedDate as keyof typeof rosterData] || [];
 

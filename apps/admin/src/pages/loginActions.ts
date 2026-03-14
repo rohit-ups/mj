@@ -1,7 +1,3 @@
-"use server";
-
-import { redirect } from "next/navigation";
-
 interface ActionResult {
   success: boolean;
   error?: string;
@@ -30,8 +26,8 @@ export async function login(
 
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  if (email === "admin@surfschool.com" && password === "password") {
-    redirect("/");
+  if (email === "admin@example.com" && password === "admin") {
+    return { success: true };
   }
 
   return { success: false, error: "Invalid email or password", field: "password" };

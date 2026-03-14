@@ -1,7 +1,7 @@
 import { ArrowUpRight, Calendar, Users, Waves } from "lucide-react";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 
-export default function Home() {
+export default function DashboardHome() {
   return (
     <div className="p-8 space-y-8">
       <header className="flex justify-between items-end">

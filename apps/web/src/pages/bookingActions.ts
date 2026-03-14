@@ -1,12 +1,10 @@
-"use server";
-
 interface BookingFormData {
   duration: number;
   stayId: string;
   startDate: string;
 }
 
-interface ActionResult {
+export interface ActionResult {
   success: boolean;
   error?: string;
   field?: string;

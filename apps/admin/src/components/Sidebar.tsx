@@ -1,8 +1,5 @@
-"use client";
-
 import { Waves, Calendar, Users, Settings, LogOut, Menu, X, LayoutDashboard } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -20,7 +17,8 @@ const navItems = [
 ];
 
 export function Sidebar() {
-  const pathname = usePathname();
+  const location = useLocation();
+  const pathname = location.pathname;
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
@@ -58,13 +56,13 @@ export function Sidebar() {
             return (
               <Link
                 key={item.name}
-                href={item.href}
+                to={item.href}
                 onClick={() => setIsOpen(false)}
                 className={cn(
                   "flex items-center gap-3 px-4 py-3 font-display text-sm uppercase tracking-widest transition-all border-2",
                   isActive
                     ? "bg-black text-white border-black"
-                    : "border-transparent hover:bg-accent hover:text-white hover:border-black"
+                    : "border-transparent hover:bg-mj-accent hover:text-white hover:border-black"
                 )}
               >
                 <item.icon className="w-4 h-4" />
@@ -76,7 +74,7 @@ export function Sidebar() {
 
         <div className="p-4 border-t-2 border-black">
           <Link
-            href="/login"
+            to="/login"
             className="flex items-center gap-3 px-4 py-3 font-display text-sm uppercase tracking-widest hover:bg-black hover:text-white transition-colors border-2 border-black"
           >
             <LogOut className="w-4 h-4" />

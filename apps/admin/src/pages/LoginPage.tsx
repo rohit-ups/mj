@@ -1,10 +1,8 @@
-"use client";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useActionState } from "react";
-import { Waves, Loader2 } from "lucide-react";
-import Link from "next/link";
-import { login } from "./actions";
+import { Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { login } from "./loginActions";
 
 const initialState = {
   success: false,
@@ -15,6 +13,13 @@ const initialState = {
 export default function LoginPage() {
   const [state, action, isPending] = useActionState(login, initialState);
   const [touched, setTouched] = useState<{ email?: boolean; password?: boolean }>({});
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (state?.success) {
+      navigate("/");
+    }
+  }, [state, navigate]);
 
   const getFieldError = (field: string) => {
     if (state?.field === field && state?.error) {
@@ -24,7 +29,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6">
+    <div className="min-h-screen flex items-center justify-center p-6 font-sans">
       <div className="w-full max-w-md space-y-8">
         <div className="flex flex-col items-center text-center space-y-2">
           <div className="w-16 h-16 bg-white border-2 border-black flex items-center justify-center mb-4">
@@ -34,7 +39,7 @@ export default function LoginPage() {
           <p className="font-display text-sm uppercase tracking-widest opacity-60">Mambo Jambo Management</p>
         </div>
 
-        <div className="border-2 border-black bg-white p-8 space-y-6">
+        <div className="border-2 border-black bg-white p-8 space-y-6 brutalist-shadow">
           <form action={action}>
             <div className="space-y-2">
               <label className="font-display text-xs uppercase tracking-widest block">Email Address</label>
@@ -44,7 +49,7 @@ export default function LoginPage() {
                 className={`w-full border-2 border-black p-3 focus:bg-sand-100 outline-none transition-colors font-sans ${
                   getFieldError("email") ? "border-red-500" : ""
                 }`}
-                placeholder="admin@surfschool.com"
+                placeholder="admin@example.com"
                 onBlur={() => setTouched((t) => ({ ...t, email: true }))}
               />
               {touched.email && getFieldError("email") && (
@@ -52,7 +57,7 @@ export default function LoginPage() {
               )}
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2 mt-4">
               <label className="font-display text-xs uppercase tracking-widest block">Password</label>
               <input
                 name="password"
@@ -69,7 +74,7 @@ export default function LoginPage() {
             </div>
 
             {!state?.success && state?.error && !state.field && (
-              <div className="p-3 bg-red-50 border border-red-200 text-red-600 text-sm font-sans">
+              <div className="p-3 bg-red-50 border border-red-200 text-red-600 text-sm font-sans mt-4">
                 {state.error}
               </div>
             )}
@@ -77,7 +82,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isPending}
-              className="block w-full bg-black text-white p-4 font-display text-center uppercase tracking-widest hover:bg-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-6 flex items-center justify-center gap-2"
+              className="block w-full bg-black text-white p-4 font-display text-center uppercase tracking-widest hover:bg-mj-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-8 flex items-center justify-center gap-2 brutalist-shadow-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
             >
               {isPending ? (
                 <>

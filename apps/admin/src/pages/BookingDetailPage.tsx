@@ -1,6 +1,4 @@
-"use client";
-
-import { useState, use } from "react";
+import { useState } from "react";
 import { 
   ArrowLeft, 
   Calendar, 
@@ -18,7 +16,7 @@ import {
   Users,
   ChevronDown
 } from "lucide-react";
-import Link from "next/link";
+import { Link, useParams } from "react-router-dom";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -67,8 +65,8 @@ const initialBookingData = {
   ]
 };
 
-export default function BookingDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const resolvedParams = use(params);
+export default function BookingDetailPage() {
+  const { id } = useParams<{ id: string }>();
   const [booking, setBooking] = useState(initialBookingData);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -122,10 +120,10 @@ export default function BookingDetailPage({ params }: { params: Promise<{ id: st
   const isFullyPaid = booking.pricing.remaining === 0;
 
   return (
-    <div className="p-8 space-y-8 max-w-5xl mx-auto">
+    <div className="p-8 space-y-8 max-w-5xl mx-auto font-sans">
       <header className="flex flex-col gap-4">
         <Link 
-          href="/bookings" 
+          to="/bookings" 
           className="flex items-center gap-2 font-display text-xs uppercase tracking-widest opacity-60 hover:opacity-100 transition-opacity w-fit"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -134,7 +132,7 @@ export default function BookingDetailPage({ params }: { params: Promise<{ id: st
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <h1 className="font-display text-5xl uppercase tracking-tighter">Booking {resolvedParams.id}</h1>
+              <h1 className="font-display text-5xl uppercase tracking-tighter">Booking {id}</h1>
               <span className={cn(
                 "px-3 py-1 border-2 font-display text-xs uppercase tracking-widest",
                 booking.status === "Confirmed" ? "bg-green-100 text-green-800 border-green-200" : "bg-yellow-100 text-yellow-800 border-yellow-200"
