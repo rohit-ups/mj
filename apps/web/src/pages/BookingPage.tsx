@@ -90,8 +90,9 @@ export default function BookingPage() {
 
       <main className="flex-1 p-6 md:p-12 max-w-5xl mx-auto w-full space-y-20">
         <div className="space-y-4">
-          <Link href="/" className="inline-flex items-center gap-2 font-mono text-xs uppercase font-bold hover:text-mj-accent transition-colors mb-4">
-            <ChevronLeft className="w-4 h-4" /> Back to Base
+          <Link to="/" className="inline-flex items-center gap-2 font-mono text-xs uppercase font-bold hover:text-mj-accent transition-colors mb-4 group/back">
+            <ChevronLeft className="w-4 h-4 group-hover/back:-translate-x-1 transition-transform" /> 
+            <span>Back to Base</span>
           </Link>
           <h1 className="text-5xl md:text-8xl font-black leading-none">
             RESERVE <br />
