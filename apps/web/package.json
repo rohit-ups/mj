@@ -10,10 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@fontsource/unbounded": "^5.1.1",
     "@fontsource/space-mono": "^5.1.1",
+    "@fontsource/unbounded": "^5.1.1",
     "@surf-school/common": "*",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.36.0",
     "lucide-react": "^0.475.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
