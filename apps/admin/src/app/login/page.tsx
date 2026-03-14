@@ -31,7 +31,7 @@ export default function LoginPage() {
             <Waves className="w-10 h-10 text-accent" />
           </div>
           <h1 className="font-display text-4xl uppercase tracking-tighter">Admin Login</h1>
-          <p className="font-display text-sm uppercase tracking-widest opacity-60">Surf School Management</p>
+          <p className="font-display text-sm uppercase tracking-widest opacity-60">Mambo Jambo Management</p>
         </div>
 
         <div className="border-2 border-black bg-white p-8 space-y-6">

@@ -5,56 +5,48 @@ const prisma = new PrismaClient()
 async function main() {
   const property = await prisma.property.create({
     data: {
-      name: 'Surf School Main Campus',
-      address: 'Beach Road, Kovalam, Kerala',
-      description: 'Premium surf school located at Kovalam beach',
+      name: 'Mambo Jambo Surf Hostel',
+      address: 'Kolachikambla Road, Karnad, Mulki, Karnataka, India',
+      description: 'Slow down and catch a breath at Mulki\'s coastline. Surf, stay, and vibe with the community.',
     },
   })
 
+  // Mambo Jambo focuses on integrated packages, but we'll seed these as base options
   await prisma.stayOption.createMany({
     data: [
       {
-        name: 'Dorm AC',
-        description: 'Air-conditioned dormitory shared room',
-        pricePerNight: 500,
-        maxGuests: 4,
+        name: 'AC Dorm Bed',
+        description: 'Comfortable air-conditioned dormitory with WiFi, Power Backup, and community vibes.',
+        pricePerNight: 1000, // Estimated standalone price, though usually sold in packages
+        maxGuests: 14,
         propertyId: property.id,
       },
       {
-        name: 'Dorm Non-AC',
-        description: 'Non-air-conditioned dormitory shared room',
-        pricePerNight: 300,
-        maxGuests: 4,
-        propertyId: property.id,
-      },
-      {
-        name: 'Room AC',
-        description: 'Private air-conditioned room',
-        pricePerNight: 800,
-        maxGuests: 2,
-        propertyId: property.id,
-      },
-      {
-        name: 'Room Non-AC',
-        description: 'Private non-air-conditioned room',
-        pricePerNight: 500,
-        maxGuests: 2,
+        name: 'Non-AC Dorm Bed',
+        description: 'Budget-friendly non-air-conditioned dormitory bed with full access to hostel amenities.',
+        pricePerNight: 700,
+        maxGuests: 8,
         propertyId: property.id,
       },
     ],
   })
 
-  const courseDurations = [3, 5, 7, 14, 30]
-  const pricePerDay = 1300
+  // Mambo Jambo Packages (Price includes lessons + stay + brunch)
+  const packages = [
+    { days: 3, nights: 2, price: 6000 },
+    { days: 5, nights: 4, price: 9700 },
+    { days: 7, nights: 6, price: 13700 },
+    { days: 10, nights: 9, price: 18700 },
+  ]
 
-  for (const days of courseDurations) {
+  for (const pkg of packages) {
     await prisma.course.create({
       data: {
-        name: `${days}-Day Surf Course`,
-        description: `${days} days of surf lessons including equipment and instructor`,
-        price: days * pricePerDay,
-        duration: days * 24 * 60,
-        maxStudents: 8,
+        name: `${pkg.days}-Day Mambo Jambo Package`,
+        description: `${pkg.days} days of surf lessons + ${pkg.nights} nights AC dorm stay + Daily Brunch.`,
+        price: pkg.price,
+        duration: pkg.days * 24 * 60, // Duration in minutes
+        maxStudents: 14,
       },
     })
   }
@@ -62,21 +54,15 @@ async function main() {
   await prisma.instructor.createMany({
     data: [
       {
-        name: 'Raj Kumar',
-        email: 'raj@surfschool.com',
-        phone: '+91 9876543210',
+        name: 'Mambo Lead Instructor',
+        email: 'instructor1@mambojambo.com',
+        phone: '+91 7022129460',
         specialty: 'beginner',
       },
       {
-        name: 'Mike Johnson',
-        email: 'mike@surfschool.com',
-        phone: '+91 9876543211',
-        specialty: 'intermediate',
-      },
-      {
-        name: 'Alex Smith',
-        email: 'alex@surfschool.com',
-        phone: '+91 9876543212',
+        name: 'Jambo Lead Instructor',
+        email: 'instructor2@mambojambo.com',
+        phone: '+91 7022129461',
         specialty: 'advanced',
       },
     ],
@@ -84,11 +70,10 @@ async function main() {
 
   const instructorList = await prisma.instructor.findMany()
   
+  // Lessons occur between 7:30 AM and 12:30 PM
   const batchTimes = [
-    { name: 'Morning Batch 1', hour: 7 },
-    { name: 'Morning Batch 2', hour: 9 },
-    { name: 'Afternoon Batch 1', hour: 11 },
-    { name: 'Afternoon Batch 2', hour: 13 },
+    { name: 'Early Morning Batch', hour: 7, minute: 30 },
+    { name: 'Morning Batch', hour: 10, minute: 0 },
   ]
 
   const startDate = new Date()
@@ -98,26 +83,26 @@ async function main() {
     
     for (const batchTime of batchTimes) {
       const batchStart = new Date(date)
-      batchStart.setHours(batchTime.hour, 0, 0, 0)
+      batchStart.setHours(batchTime.hour, batchTime.minute, 0, 0)
       
       const batchEnd = new Date(batchStart)
-      batchEnd.setHours(batchStart.getHours() + 2)
+      batchEnd.setHours(batchStart.getHours() + 2) // Standard 2-hour session
       
       const instructor = instructorList[day % instructorList.length]
       
       await prisma.batch.create({
         data: {
-          name: `${batchTime.name} - Day ${day + 1}`,
+          name: `${batchTime.name} - ${date.toDateString()}`,
           startDate: batchStart,
           endDate: batchEnd,
-          maxCapacity: 8,
+          maxCapacity: 14,
           instructorId: instructor.id,
         },
       })
     }
   }
 
-  console.log('Seed data created successfully!')
+  console.log('Mambo Jambo seed data created successfully!')
 }
 
 main()

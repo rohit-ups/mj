@@ -6,29 +6,22 @@ import { Waves, ArrowRight, Calendar, Home, Clock, Check, Loader2 } from "lucide
 import Link from "next/link";
 import { submitBooking } from "./actions";
 
-const DURATIONS = [3, 5, 7, 14, 30];
+const DURATIONS = [3, 5, 7, 10];
 
 const STAY_OPTIONS = [
   {
     id: "1",
-    name: "Surf Shack",
-    description: "Shared dorm, 2 mins from the beach. Perfect for solo travelers.",
-    pricePerNight: 25,
-    image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&q=80&w=800",
+    name: "AC Dorm Bed",
+    description: "Cool and comfortable shared dorm with high-speed WiFi and power backup.",
+    pricePerNight: "Incl.",
+    image: "https://images.unsplash.com/photo-1555854817-5b2247a8175f?auto=format&fit=crop&q=80&w=800",
   },
   {
     id: "2",
-    name: "Ocean View Villa",
-    description: "Private room with balcony. Wake up to the sound of waves.",
-    pricePerNight: 85,
-    image: "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "3",
-    name: "Eco Lodge",
-    description: "Sustainable living in the jungle. Quiet and peaceful.",
-    pricePerNight: 55,
-    image: "https://images.unsplash.com/photo-1523413651479-597eb2da0ad6?auto=format&fit=crop&q=80&w=800",
+    name: "Non-AC Dorm Bed",
+    description: "Budget-friendly shared dorm with a natural breeze and community vibe.",
+    pricePerNight: "Incl.",
+    image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&q=80&w=800",
   },
 ];
 
@@ -76,7 +69,7 @@ export default function BookingPage() {
       <header className="p-6 flex justify-between items-center border-b-2 border-black sticky top-0 bg-[#fbf8f1] z-50">
         <Link href="/" className="flex items-center gap-2">
           <Waves className="w-8 h-8 text-accent" />
-          <span className="font-display text-2xl tracking-tighter uppercase">Surf School</span>
+          <span className="font-display text-2xl tracking-tighter uppercase">Mambo Jambo</span>
         </Link>
         <button className="bg-black text-white px-4 py-2 font-display text-sm uppercase tracking-widest hover:bg-accent transition-colors">
           Menu
@@ -168,12 +161,12 @@ export default function BookingPage() {
                   <div className="p-6 space-y-4 flex-1 flex flex-col">
                     <div className="flex justify-between items-start">
                       <h3 className="font-display text-xl uppercase leading-none">{stay.name}</h3>
-                      <span className="font-display text-accent text-xl">${stay.pricePerNight}</span>
+                      <span className="font-display text-accent text-xl">{stay.pricePerNight}</span>
                     </div>
                     <p className="text-sm opacity-70 flex-1">{stay.description}</p>
                     <div className="flex items-center gap-2 font-display text-xs uppercase tracking-widest">
                       <Home className="w-4 h-4" />
-                      <span>Per Night</span>
+                      <span>{stay.pricePerNight === "Incl." ? "Package" : "Per Night"}</span>
                     </div>
                   </div>
                   {stayId === stay.id && (
@@ -223,7 +216,7 @@ export default function BookingPage() {
               <p className="font-display text-sm uppercase tracking-widest opacity-60">Your Selection</p>
               <div className="flex flex-wrap gap-4">
                 <span className="px-3 py-1 border border-black/20 font-display text-xs uppercase">
-                  {duration ? `${duration} Days Course` : "No duration selected"}
+                  {duration ? `${duration} Days Package` : "No duration selected"}
                 </span>
                 <span className="px-3 py-1 border border-black/20 font-display text-xs uppercase">
                   {stayId ? STAY_OPTIONS.find((s) => s.id === stayId)?.name : "No stay selected"}
@@ -263,7 +256,7 @@ export default function BookingPage() {
 
       <footer className="p-6 border-t-2 border-black flex flex-col md:flex-row justify-between gap-4 mt-24">
         <div className="font-display text-sm uppercase tracking-widest">
-          © 2026 Surf School. All Rights Reserved.
+          © 2026 Mambo Jambo. All Rights Reserved.
         </div>
         <div className="flex gap-6 font-display text-sm uppercase tracking-widest">
           <a href="#" className="hover:text-accent transition-colors">Instagram</a>

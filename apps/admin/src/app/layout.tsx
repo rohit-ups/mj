@@ -20,8 +20,8 @@ function cn(...inputs: ClassValue[]) {
 }
 
 export const metadata: Metadata = {
-  title: "Surf School Admin",
-  description: "Admin dashboard for Surf School",
+  title: "Mambo Jambo Admin",
+  description: "Admin dashboard for Mambo Jambo Surf School",
 };
 
 export default function RootLayout({

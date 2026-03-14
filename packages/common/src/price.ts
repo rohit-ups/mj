@@ -1,18 +1,30 @@
-const COURSE_PRICE_PER_DAY = 1300;
-
 export interface PriceBreakdown {
-  courseCost: number;
-  stayCost: number;
+  packageCost: number;
+  additionalCost: number;
   total: number;
 }
 
+const PACKAGE_PRICES: Record<number, number> = {
+  3: 6000,
+  5: 9700,
+  7: 13700,
+  10: 18700,
+};
+
+/**
+ * Calculates the total price for a Mambo Jambo package.
+ * Mambo Jambo uses integrated pricing (Surf + Stay + Brunch).
+ */
 export function calculateTotal(
   courseDays: number,
-  stayOptionPricePerNight: number
+  additionalServicesCost: number = 0
 ): PriceBreakdown {
-  const courseCost = courseDays * COURSE_PRICE_PER_DAY;
-  const stayCost = stayOptionPricePerNight * courseDays;
-  const total = courseCost + stayCost;
+  const packageCost = PACKAGE_PRICES[courseDays] || courseDays * 2000; // Fallback to day-based if not a standard package
+  const total = packageCost + additionalServicesCost;
 
-  return { courseCost, stayCost, total };
+  return { 
+    packageCost, 
+    additionalCost: additionalServicesCost, 
+    total 
+  };
 }
