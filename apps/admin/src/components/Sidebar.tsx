@@ -48,7 +48,7 @@ export function Sidebar() {
         )}
       >
         <div className="p-6 border-b-2 border-black flex items-center gap-2">
-          <Waves className="w-6 h-6 text-accent" />
+          <img src="/logo.png" alt="Mambo Jambo Logo" className="w-8 h-8 object-contain" />
           <span className="font-display text-xl tracking-tighter uppercase">Admin</span>
         </div>
 

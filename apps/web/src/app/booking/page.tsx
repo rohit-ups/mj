@@ -68,7 +68,7 @@ export default function BookingPage() {
     <div className="flex-1 flex flex-col min-h-screen">
       <header className="p-6 flex justify-between items-center border-b-2 border-black sticky top-0 bg-[#fbf8f1] z-50">
         <Link href="/" className="flex items-center gap-2">
-          <Waves className="w-8 h-8 text-accent" />
+          <img src="/logo.png" alt="Mambo Jambo Logo" className="w-10 h-10 object-contain" />
           <span className="font-display text-2xl tracking-tighter uppercase">Mambo Jambo</span>
         </Link>
         <button className="bg-black text-white px-4 py-2 font-display text-sm uppercase tracking-widest hover:bg-accent transition-colors">

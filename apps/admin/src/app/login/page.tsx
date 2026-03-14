@@ -27,8 +27,8 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center p-6">
       <div className="w-full max-w-md space-y-8">
         <div className="flex flex-col items-center text-center space-y-2">
-          <div className="w-16 h-16 bg-black text-white flex items-center justify-center mb-4">
-            <Waves className="w-10 h-10 text-accent" />
+          <div className="w-16 h-16 bg-white border-2 border-black flex items-center justify-center mb-4">
+            <img src="/logo.png" alt="Mambo Jambo Logo" className="w-12 h-12 object-contain" />
           </div>
           <h1 className="font-display text-4xl uppercase tracking-tighter">Admin Login</h1>
           <p className="font-display text-sm uppercase tracking-widest opacity-60">Mambo Jambo Management</p>
