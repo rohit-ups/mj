@@ -1,27 +1,37 @@
-const express = require('express');
-const cors = require('cors');
+const fastify = require('fastify')({
+  logger: true
+});
 const { PrismaClient } = require('@prisma/client');
 
-const globalForPrisma = globalThis || {};
-const prisma = globalForPrisma.prisma || new PrismaClient();
+const prisma = new PrismaClient();
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+// Register plugins
+fastify.register(require('@fastify/cors'), {
+  origin: true // Allow all for development
+});
+fastify.register(require('@fastify/formbody'));
 
-const app = express();
-const PORT = process.env.PORT || 4000;
-
-app.use(cors());
-app.use(express.json());
-
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'ok' });
+// Health check
+fastify.get('/health', async (request, reply) => {
+  return { status: 'ok' };
 });
 
-app.use('/bookings', require('./routes/bookings'));
-app.use('/webhooks', require('./routes/webhooks'));
+// Register routes
+fastify.register(require('./routes/bookings'), { prefix: '/bookings' });
+fastify.register(require('./routes/webhooks'), { prefix: '/webhooks' });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Start server
+const start = async () => {
+  try {
+    const PORT = process.env.PORT || 4000;
+    await fastify.listen({ port: PORT, host: '0.0.0.0' });
+    console.log(`Server running on port ${PORT}`);
+  } catch (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
+};
 
-module.exports = app;
+start();
+
+module.exports = fastify;
