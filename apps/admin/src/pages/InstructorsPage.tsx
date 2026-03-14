@@ -23,10 +23,12 @@ export default function InstructorsPage() {
   const fetchInstructors = async () => {
     try {
       const res = await fetch(`${API_URL}/instructors`);
+      if (!res.ok) throw new Error(`API Error: ${res.status} ${res.statusText}`);
       const data = await res.json();
       setInstructors(data);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to fetch instructors:", error);
+      throw error;
     } finally {
       setLoading(false);
     }

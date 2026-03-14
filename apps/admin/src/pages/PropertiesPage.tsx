@@ -22,10 +22,12 @@ export default function PropertiesPage() {
   const fetchProperties = async () => {
     try {
       const res = await fetch(`${API_URL}/properties`);
+      if (!res.ok) throw new Error(`API Error: ${res.status} ${res.statusText}`);
       const data = await res.json();
       setProperties(data);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to fetch properties:", error);
+      throw error;
     } finally {
       setLoading(false);
     }

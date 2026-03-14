@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 import './globals.css';
@@ -11,6 +11,7 @@ import '@fontsource/dm-sans/500.css';
 import '@fontsource/dm-sans/700.css';
 
 import { Sidebar } from './components/Sidebar';
+import { ErrorBoundary, LoadingFallback } from './components/ErrorBoundary';
 import LoginPage from './pages/LoginPage';
 import DashboardHome from './pages/DashboardHome';
 import BatchesPage from './pages/BatchesPage';
@@ -49,26 +50,30 @@ const DashboardLayout = () => {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/" element={<DashboardLayout />}>
-          <Route index element={<DashboardHome />} />
-          <Route path="bookings" element={<BookingsPage />} />
-          <Route path="bookings/:id" element={<BookingDetailPage />} />
-          <Route path="batches" element={<BatchesPage />} />
-          <Route path="roster" element={<RosterPage />} />
-          
-          {/* Management Routes */}
-          <Route path="packages" element={<PackagesPage />} />
-          <Route path="properties" element={<PropertiesPage />} />
-          <Route path="instructors" element={<InstructorsPage />} />
-          
-          {/* Content Routes */}
-          <Route path="faqs" element={<FAQsPage />} />
-          <Route path="settings" element={<PlaceholderPage title="Site Settings" />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <Suspense fallback={<LoadingFallback />}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/" element={<DashboardLayout />}>
+              <Route index element={<DashboardHome />} />
+              <Route path="bookings" element={<BookingsPage />} />
+              <Route path="bookings/:id" element={<BookingDetailPage />} />
+              <Route path="batches" element={<BatchesPage />} />
+              <Route path="roster" element={<RosterPage />} />
+              
+              {/* Management Routes */}
+              <Route path="packages" element={<PackagesPage />} />
+              <Route path="properties" element={<PropertiesPage />} />
+              <Route path="instructors" element={<InstructorsPage />} />
+              
+              {/* Content Routes */}
+              <Route path="faqs" element={<FAQsPage />} />
+              <Route path="settings" element={<PlaceholderPage title="Site Settings" />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </Suspense>
+    </ErrorBoundary>
   </React.StrictMode>
 );

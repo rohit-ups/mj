@@ -24,10 +24,12 @@ export default function PackagesPage() {
   const fetchPackages = async () => {
     try {
       const res = await fetch(`${API_URL}/courses`);
+      if (!res.ok) throw new Error(`API Error: ${res.status} ${res.statusText}`);
       const data = await res.json();
       setPackages(data);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to fetch packages:", error);
+      throw error; // Let ErrorBoundary handle it
     } finally {
       setLoading(false);
     }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './globals.css';
@@ -12,6 +12,7 @@ import '@fontsource/space-mono/700.css';
 
 import HomePage from './pages/HomePage';
 import BookingPage from './pages/BookingPage';
+import { ErrorBoundary, WebLoadingFallback } from './components/ErrorBoundary';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -26,13 +27,17 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/booking" element={<BookingPage />} />
-        </Routes>
-      </Layout>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <Suspense fallback={<WebLoadingFallback />}>
+        <BrowserRouter>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/booking" element={<BookingPage />} />
+            </Routes>
+          </Layout>
+        </BrowserRouter>
+      </Suspense>
+    </ErrorBoundary>
   </React.StrictMode>
 );
