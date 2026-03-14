@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+
 import { useState } from "react";
 import { 
   Search, 
@@ -8,13 +8,8 @@ import {
   MoreHorizontal,
   ArrowUpDown,
   Download,
-  Plus,
-  ArrowRight,
-  User,
-  CreditCard,
-  History
+  Plus
 } from "lucide-react";
-import { Link } from "react-router-dom";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -28,50 +23,66 @@ const bookings = [
     date: "2026-03-14",
     name: "John Doe",
     email: "john@example.com",
-    course: "3-Day Mambo Jambo",
-    stay: "AC Dorm Bed",
+    course: "Beginner Lesson",
+    stay: "1 Day",
     status: "Confirmed",
-    amount: "₹6,000",
-    payment: "Partial"
+    amount: "$85.00",
   },
   {
     id: "BK-002",
     date: "2026-03-15",
     name: "Sarah Smith",
     email: "sarah@example.com",
-    course: "5-Day Mambo Jambo",
-    stay: "AC Dorm Bed",
+    course: "Intermediate Surf",
+    stay: "3 Days",
     status: "Pending",
-    amount: "₹9,700",
-    payment: "Unpaid"
+    amount: "$240.00",
   },
   {
     id: "BK-003",
     date: "2026-03-16",
     name: "Mike Johnson",
     email: "mike@example.com",
-    course: "7-Day Mambo Jambo",
-    stay: "Non-AC Dorm Bed",
+    course: "Private Coaching",
+    stay: "1 Day",
     status: "Cancelled",
-    amount: "₹13,700",
-    payment: "Refunded"
+    amount: "$120.00",
   },
   {
     id: "BK-004",
     date: "2026-03-17",
     name: "Emma Wilson",
     email: "emma@example.com",
-    course: "3-Day Mambo Jambo",
-    stay: "AC Dorm Bed",
+    course: "Beginner Lesson",
+    stay: "5 Days",
     status: "Confirmed",
-    amount: "₹6,000",
-    payment: "Full"
-  }
+    amount: "$380.00",
+  },
+  {
+    id: "BK-005",
+    date: "2026-03-18",
+    name: "David Brown",
+    email: "david@example.com",
+    course: "Surf Camp",
+    stay: "7 Days",
+    status: "Confirmed",
+    amount: "$550.00",
+  },
+  {
+    id: "BK-006",
+    date: "2026-03-19",
+    name: "Lisa Garcia",
+    email: "lisa@example.com",
+    course: "Intermediate Surf",
+    stay: "2 Days",
+    status: "Pending",
+    amount: "$160.00",
+  },
 ];
 
-const statusStyles = {
+const statusColors = {
   Confirmed: "bg-green-100 text-green-800 border-green-200",
-  Pending: "bg-mj-yellow text-black border-black",
+  Pending: "bg-yellow-100 text-yellow-800 border-yellow-200",
   Cancelled: "bg-red-100 text-red-800 border-red-200",
 };
 
@@ -87,30 +98,31 @@ export default function BookingsPage() {
   });
 
   return (
-    <div className="p-8 space-y-8 max-w-7xl mx-auto">
-      <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-        <div className="space-y-2">
-          <h1 className="font-display text-6xl uppercase tracking-tighter leading-none">Reservations</h1>
-          <p className="font-mono text-xs uppercase tracking-widest opacity-60">Database / Incoming Transmissions</p>
+    <div className="p-8 space-y-8">
+      <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+        <div>
+          <h1 className="font-display text-5xl uppercase tracking-tighter">Bookings</h1>
+          <p className="font-display text-sm uppercase tracking-widest opacity-60">Manage your surf school reservations</p>
         </div>
-        <div className="flex gap-4">
-          <button className="brutalist-button px-6 py-3 text-xs flex items-center gap-2">
-            <Download className="w-4 h-4" /> Export CSV
+        <div className="flex gap-3">
+          <button className="flex items-center gap-2 px-4 py-2 border-2 border-black bg-white font-display text-xs uppercase tracking-widest hover:bg-sand-100 transition-colors">
+            <Download className="w-4 h-4" />
+            Export
           </button>
-          <button className="brutalist-button px-6 py-3 text-xs bg-black text-white flex items-center gap-2">
-            <Plus className="w-4 h-4" /> New Intake
+          <button className="flex items-center gap-2 px-4 py-2 border-2 border-black bg-black text-white font-display text-xs uppercase tracking-widest hover:bg-accent transition-colors">
+            <Plus className="w-4 h-4" />
+            New Booking
           </button>
         </div>
       </header>
 
-      {/* FILTER TERMINAL */}
-      <div className="brutalist-border bg-white p-6 brutalist-shadow-sm grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="md:col-span-2 relative group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 opacity-40 group-focus-within:text-mj-accent transition-colors" />
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="md:col-span-2 relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 opacity-40" />
           <input 
             type="text" 
-            placeholder="Search Identifier / Name..."
-            className="w-full pl-12 pr-4 py-4 border-2 border-black bg-[#f5f5f5] font-mono text-xs uppercase focus:bg-white outline-none transition-all"
+            placeholder="Search by name or ID..."
+            className="w-full pl-12 pr-4 py-3 border-2 border-black bg-white font-display text-sm uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-accent/20"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -118,7 +130,7 @@ export default function BookingsPage() {
         <div className="relative">
           <Filter className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 opacity-40" />
           <select 
-            className="w-full pl-12 pr-4 py-4 border-2 border-black bg-[#f5f5f5] font-mono text-xs uppercase focus:bg-white outline-none appearance-none cursor-pointer"
+            className="w-full pl-12 pr-4 py-3 border-2 border-black bg-white font-display text-sm uppercase tracking-widest focus:outline-none appearance-none"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
@@ -133,101 +145,88 @@ export default function BookingsPage() {
           <CalendarIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 opacity-40" />
           <input 
             type="date" 
-            className="w-full pl-12 pr-4 py-4 border-2 border-black bg-[#f5f5f5] font-mono text-xs uppercase focus:bg-white outline-none"
+            className="w-full pl-12 pr-4 py-3 border-2 border-black bg-white font-display text-sm uppercase tracking-widest focus:outline-none"
           />
         </div>
       </div>
 
-      {/* BOOKINGS GRID */}
-      <div className="grid grid-cols-1 gap-6">
-        {filteredBookings.map((booking, i) => (
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: i * 0.05 }}
-            key={booking.id}
-            className="brutalist-border bg-white brutalist-shadow-sm hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all group"
-          >
-            <div className="flex flex-col lg:flex-row divide-y-2 lg:divide-y-0 lg:divide-x-2 divide-black">
-              {/* ID & STATUS */}
-              <div className="p-6 lg:w-48 bg-[#f5f5f5] flex flex-col justify-between gap-4">
-                <span className="font-mono text-[10px] font-bold opacity-40 uppercase">UID: {booking.id}</span>
-                <span className={cn(
-                  "px-3 py-1 border-2 border-black font-display text-[10px] uppercase font-black text-center",
-                  statusStyles[booking.status as keyof typeof statusStyles]
-                )}>
-                  {booking.status}
-                </span>
-              </div>
-
-              {/* CUSTOMER */}
-              <div className="p-6 flex-1 flex items-center gap-6">
-                <div className="w-12 h-12 brutalist-border bg-mj-yellow flex items-center justify-center shrink-0">
-                  <User className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="font-display text-2xl uppercase tracking-tighter leading-none group-hover:text-mj-accent transition-colors">{booking.name}</h3>
-                  <p className="font-mono text-[10px] opacity-60 uppercase mt-1">{booking.email}</p>
-                </div>
-              </div>
-
-              {/* DETAILS */}
-              <div className="p-6 flex-1 grid grid-cols-2 gap-4 items-center">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2 opacity-40">
-                    <History className="w-3 h-3" />
-                    <span className="font-mono text-[9px] uppercase font-bold">Package</span>
+      <div className="border-2 border-black bg-white overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b-2 border-black bg-sand-50">
+                <th className="p-4 font-display text-xs uppercase tracking-widest border-r-2 border-black">
+                  <div className="flex items-center gap-2">
+                    Date <ArrowUpDown className="w-3 h-3" />
                   </div>
-                  <p className="font-display text-xs uppercase">{booking.course}</p>
-                </div>
-                <div className="space-y-1 border-l-2 border-black/10 pl-4">
-                  <div className="flex items-center gap-2 opacity-40">
-                    <CalendarIcon className="w-3 h-3" />
-                    <span className="font-mono text-[9px] uppercase font-bold">Start Sequence</span>
-                  </div>
-                  <p className="font-display text-xs uppercase">{booking.date}</p>
-                </div>
-              </div>
-
-              {/* FINANCIALS */}
-              <div className="p-6 lg:w-64 flex flex-col justify-center gap-2 bg-sand-50/50">
-                <div className="flex justify-between items-center">
-                  <span className="font-mono text-[9px] uppercase font-bold opacity-40">Total</span>
-                  <span className="font-display text-xl font-black">{booking.amount}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="font-mono text-[9px] uppercase font-bold opacity-40">Payment</span>
-                  <span className="px-2 py-0.5 bg-black text-white font-mono text-[9px] uppercase font-bold">{booking.payment}</span>
-                </div>
-              </div>
-
-              {/* ACTION */}
-              <Link 
-                to={`/bookings/${booking.id}`}
-                className="p-6 lg:w-20 flex items-center justify-center bg-white hover:bg-mj-accent hover:text-white transition-colors border-t-2 lg:border-t-0"
-              >
-                <ArrowRight className="w-6 h-6" />
-              </Link>
-            </div>
-          </motion.div>
-        ))}
+                </th>
+                <th className="p-4 font-display text-xs uppercase tracking-widest border-r-2 border-black">Customer</th>
+                <th className="p-4 font-display text-xs uppercase tracking-widest border-r-2 border-black">Course</th>
+                <th className="p-4 font-display text-xs uppercase tracking-widest border-r-2 border-black">Stay</th>
+                <th className="p-4 font-display text-xs uppercase tracking-widest border-r-2 border-black">Status</th>
+                <th className="p-4 font-display text-xs uppercase tracking-widest border-r-2 border-black text-right">Amount</th>
+                <th className="p-4 font-display text-xs uppercase tracking-widest"></th>
+              </tr>
+            </thead>
+            <tbody className="divide-y-2 divide-black">
+              {filteredBookings.map((booking) => (
+                <tr key={booking.id} className="hover:bg-sand-50 transition-colors group">
+                  <td className="p-4 border-r-2 border-black">
+                    <div className="font-display text-sm uppercase">{booking.date}</div>
+                    <div className="text-[10px] opacity-40 uppercase tracking-tighter">{booking.id}</div>
+                  </td>
+                  <td className="p-4 border-r-2 border-black">
+                    <div className="font-display text-sm uppercase">{booking.name}</div>
+                    <div className="text-xs opacity-60">{booking.email}</div>
+                  </td>
+                  <td className="p-4 border-r-2 border-black">
+                    <div className="font-display text-sm uppercase">{booking.course}</div>
+                  </td>
+                  <td className="p-4 border-r-2 border-black">
+                    <div className="font-display text-sm uppercase">{booking.stay}</div>
+                  </td>
+                  <td className="p-4 border-r-2 border-black">
+                    <span className={cn(
+                      "px-2 py-1 border font-display text-[10px] uppercase tracking-widest",
+                      statusColors[booking.status as keyof typeof statusColors]
+                    )}>
+                      {booking.status}
+                    </span>
+                  </td>
+                  <td className="p-4 border-r-2 border-black text-right">
+                    <div className="font-display text-sm uppercase">{booking.amount}</div>
+                  </td>
+                  <td className="p-4 text-center">
+                    <button className="p-2 hover:bg-black hover:text-white transition-colors border border-transparent hover:border-black">
+                      <MoreHorizontal className="w-4 h-4" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {filteredBookings.length === 0 && (
+          <div className="p-12 text-center space-y-4">
+            <div className="font-display text-xl uppercase opacity-40">No bookings found</div>
+            <button 
+              onClick={() => {setSearchQuery(""); setStatusFilter("All");}}
+              className="font-display text-xs uppercase tracking-widest underline hover:text-accent"
+            >
+              Clear all filters
+            </button>
+          </div>
+        )}
+        <div className="p-4 border-t-2 border-black bg-sand-50 flex justify-between items-center">
+          <span className="font-display text-[10px] uppercase tracking-widest opacity-60">
+            Showing {filteredBookings.length} of {bookings.length} bookings
+          </span>
+          <div className="flex gap-2">
+            <button className="px-3 py-1 border border-black bg-white font-display text-[10px] uppercase tracking-widest disabled:opacity-30" disabled>Prev</button>
+            <button className="px-3 py-1 border border-black bg-white font-display text-[10px] uppercase tracking-widest">Next</button>
+          </div>
+        </div>
       </div>
-
-      {filteredBookings.length === 0 && (
-        <div className="brutalist-border border-dashed p-20 text-center space-y-4 opacity-40">
-          <Activity className="w-12 h-12 mx-auto" />
-          <p className="font-display text-2xl uppercase">No records found in current sector</p>
-        </div>
-      )}
-
-      {/* PAGINATION */}
-      <footer className="flex justify-between items-center pt-10">
-        <span className="font-mono text-[10px] uppercase font-bold opacity-40 italic">Sector Trace: 1-{filteredBookings.length} of {bookings.length}</span>
-        <div className="flex gap-4">
-          <button className="brutalist-button px-4 py-2 text-[10px] disabled:opacity-20" disabled>PREV_BLOCK</button>
-          <button className="brutalist-button px-4 py-2 text-[10px]">NEXT_BLOCK</button>
-        </div>
-      </footer>
     </div>
   );
 }
