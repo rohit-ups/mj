@@ -38,6 +38,16 @@ surf-school/
 ### Prerequisites
 - Node.js (v20+)
 - npm
+- Docker and Docker Compose
+
+### Local Infrastructure Setup
+Before running the apps, start the infrastructure (PostgreSQL, Redis):
+```bash
+docker-compose up -d
+```
+- PostgreSQL: `localhost:5432`
+- Redis: `localhost:6379`
+- PgAdmin: `http://localhost:5050` (User: `admin@example.com`, Pass: `admin`)
 
 ### Installation
 ```bash
@@ -45,14 +55,13 @@ npm install
 ```
 
 ### Database Setup
-```bash
-cd surf-school
-npx prisma db push
-npx prisma db seed
-```
+To use PostgreSQL (instead of the default SQLite):
+1.  Change `provider = "sqlite"` to `provider = "postgresql"` in `prisma/schema.prisma`.
+2.  Update `DATABASE_URL` in your `.env` file using the value from `.env.example`.
+3.  Run `npx prisma db push` to initialize the database in Postgres.
 
 ### Development
-From the `surf-school` directory:
+From the root directory:
 ```bash
 npm run dev
 ```
