@@ -41,8 +41,15 @@ async function managementRoutes(fastify, options) {
 
   fastify.put('/properties/:id', async (request) => {
     const { id } = request.params;
-    const data = request.body;
+    const { stayOptions, ...data } = request.body;
     return await prisma.property.update({ where: { id }, data });
+  });
+
+  // STAY OPTIONS
+  fastify.put('/stay-options/:id', async (request) => {
+    const { id } = request.params;
+    const data = request.body;
+    return await prisma.stayOption.update({ where: { id }, data });
   });
 
   // INSTRUCTORS

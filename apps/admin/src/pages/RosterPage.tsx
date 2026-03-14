@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { 
   Calendar as CalendarIcon, 
@@ -9,8 +8,15 @@ import {
   CheckCircle2, 
   XCircle, 
   AlertCircle,
-  MoreVertical
+  MoreVertical,
+  Eye,
+  UserCheck,
+  UserX,
+  ArrowRightLeft,
+  Zap,
+  X
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -18,59 +24,93 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// Mock data for the roster
-const rosterData = {
-  "2026-03-14": [
-    {
-      id: "B-001",
-      name: "Early Morning Batch",
-      time: "07:30 AM - 09:30 AM",
-      instructor: "Raj Kumar",
-      students: [
-        { id: "BK-001", name: "John Doe", status: "present", payment: "paid" },
-        { id: "BK-004", name: "Emma Wilson", status: "present", payment: "partial" },
-        { id: "BK-007", name: "Alice Brown", status: "absent", payment: "paid" },
-      ]
-    },
-    {
-      id: "B-002",
-      name: "Morning Batch",
-      time: "10:00 AM - 12:00 PM",
-      instructor: "Mike Johnson",
-      students: [
-        { id: "BK-002", name: "Sarah Smith", status: "pending", payment: "partial" },
-        { id: "BK-005", name: "David Brown", status: "present", payment: "paid" },
-        { id: "BK-009", name: "Chris Evans", status: "pending", payment: "unpaid" },
-      ]
-    }
-  ],
-  "2026-03-15": [
-    {
-      id: "B-001",
-      name: "Early Morning Batch",
-      time: "07:30 AM - 09:30 AM",
-      instructor: "Raj Kumar",
-      students: [
-        { id: "BK-001", name: "John Doe", status: "pending", payment: "paid" },
-        { id: "BK-010", name: "Robert Miller", status: "pending", payment: "paid" },
-      ]
-    }
-  ]
+const API_URL = "http://localhost:4000";
+
+const ActionMenu = ({ studentId }: { studentId: string }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="relative">
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="p-1 hover:bg-sand-100 rounded-full transition-colors"
+      >
+        <MoreVertical className="w-5 h-5" />
+      </button>
+      
+      {isOpen && (
+        <>
+          <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
+          <div className="absolute right-0 mt-2 w-48 bg-white border-2 border-black brutalist-shadow-sm z-20 overflow-hidden">
+            <button className="w-full flex items-center gap-2 px-4 py-2 text-[10px] uppercase font-bold hover:bg-sand-50 border-b border-black/10 text-left">
+              <Eye className="w-3 h-3" /> View Details
+            </button>
+            <button className="w-full flex items-center gap-2 px-4 py-2 text-[10px] uppercase font-bold hover:bg-sand-50 border-b border-black/10 text-green-600 text-left">
+              <UserCheck className="w-3 h-3" /> Mark Present
+            </button>
+            <button className="w-full flex items-center gap-2 px-4 py-2 text-[10px] uppercase font-bold hover:bg-sand-50 border-b border-black/10 text-red-600 text-left">
+              <UserX className="w-3 h-3" /> Mark Absent
+            </button>
+            <button className="w-full flex items-center gap-2 px-4 py-2 text-[10px] uppercase font-bold hover:bg-sand-50 text-mj-blue text-left">
+              <ArrowRightLeft className="w-3 h-3" /> Change Batch
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
 };
 
 export default function RosterPage() {
   const [selectedDate, setSelectedDate] = useState("2026-03-14");
   const [isMounted, setIsMounted] = useState(false);
+  const [batches, setBatches] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showAssignModal, setShowAssignModal] = useState(false);
+  const [assignForm, setAssignForm] = useState({ studentId: "", batchId: "" });
+  const [bookings, setBookings] = useState<any[]>([]);
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+    fetchData();
+  }, [selectedDate]);
 
-  if (!isMounted) {
-    return <div className="p-8">Loading Roster...</div>;
-  }
-  
-  const batches = rosterData[selectedDate as keyof typeof rosterData] || [];
+  const fetchData = async () => {
+    try {
+      const [bRes, rRes] = await Promise.all([
+        fetch(`${API_URL}/bookings/batches`),
+        fetch(`${API_URL}/bookings`)
+      ]);
+      const bData = await bRes.json();
+      const rData = await rRes.json();
+      
+      // Filter batches for current date
+      const dateFilteredBatches = bData.filter((b: any) => 
+        new Date(b.startDate).toDateString() === new Date(selectedDate).toDateString()
+      );
+      
+      setBatches(dateFilteredBatches);
+      setBookings(rData);
+    } catch (e) { console.error(e); }
+    finally { setLoading(false); }
+  };
+
+  const handleAssignStudent = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(`${API_URL}/bookings/${assignForm.studentId}/assign-batch`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ batchId: assignForm.batchId, date: selectedDate })
+      });
+      if (res.ok) {
+        await fetchData();
+        setShowAssignModal(false);
+      }
+    } catch (e) { console.error(e); }
+  };
+
+  if (!isMounted) return null;
 
   const handlePrevDay = () => {
     const date = new Date(selectedDate);
@@ -93,7 +133,7 @@ export default function RosterPage() {
   };
 
   return (
-    <div className="p-4 md:p-8 space-y-8 max-w-7xl mx-auto">
+    <div className="p-4 md:p-8 space-y-8 max-w-7xl mx-auto pb-20">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <h1 className="font-display text-4xl md:text-5xl uppercase tracking-tighter">Daily Roster</h1>
@@ -125,6 +165,60 @@ export default function RosterPage() {
         </div>
       </header>
 
+      {/* ASSIGN MODAL */}
+      <AnimatePresence>
+        {showAssignModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm font-sans">
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="w-full max-w-xl bg-white border-[3px] border-black brutalist-shadow p-10 space-y-8 text-mj-black"
+            >
+              <div className="flex justify-between items-center border-b-[3px] border-black pb-4">
+                <h2 className="font-display text-3xl uppercase tracking-tighter font-black text-mj-black">Assign Student</h2>
+                <button onClick={() => setShowAssignModal(false)} className="hover:text-mj-accent transition-colors">
+                  <X className="w-8 h-8" />
+                </button>
+              </div>
+
+              <form onSubmit={handleAssignStudent} className="space-y-6">
+                <div className="space-y-2">
+                  <label className="font-mono text-[10px] font-black uppercase tracking-widest block opacity-60 text-mj-black">Select Student</label>
+                  <select 
+                    required
+                    className="w-full border-[3px] border-black p-4 focus:bg-sand-50 outline-none font-display text-xs uppercase font-bold appearance-none bg-white text-mj-black"
+                    value={assignForm.studentId}
+                    onChange={e => setAssignForm({ ...assignForm, studentId: e.target.value })}
+                  >
+                    <option value="">Choose Unit from Registry</option>
+                    {bookings.map(b => <option key={b.id} value={b.id}>{b.customerName} ({b.id})</option>)}
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="font-mono text-[10px] font-black uppercase tracking-widest block opacity-60 text-mj-black">Target Sector</label>
+                  <select 
+                    required
+                    className="w-full border-[3px] border-black p-4 focus:bg-sand-50 outline-none font-display text-xs uppercase font-bold appearance-none bg-white text-mj-black"
+                    value={assignForm.batchId}
+                    onChange={e => setAssignForm({ ...assignForm, batchId: e.target.value })}
+                  >
+                    <option value="">Choose Sector</option>
+                    {batches.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
+                  </select>
+                </div>
+                <button 
+                  type="submit"
+                  className="w-full brutalist-button bg-mj-blue text-white py-6 text-xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:shadow-none"
+                >
+                  CONFIRM ASSIGNMENT
+                </button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       {batches.length === 0 ? (
         <div className="border-4 border-dashed border-black/20 p-20 text-center space-y-4">
           <Users className="w-12 h-12 mx-auto opacity-20" />
@@ -145,21 +239,27 @@ export default function RosterPage() {
                   <div className="flex flex-wrap gap-6 pt-2">
                     <div className="flex items-center gap-2">
                       <Clock className="w-4 h-4 opacity-40" />
-                      <span className="font-display text-xs uppercase tracking-widest">{batch.time}</span>
+                      <span className="font-display text-xs uppercase tracking-widest">
+                        {new Date(batch.startDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Users className="w-4 h-4 opacity-40" />
-                      <span className="font-display text-xs uppercase tracking-widest">Instructor: {batch.instructor}</span>
+                      <span className="font-display text-xs uppercase tracking-widest">Instructor: {batch.instructor?.name}</span>
                     </div>
                   </div>
                 </div>
-                <button className="bg-black text-white px-6 py-2 font-display text-xs uppercase tracking-widest hover:bg-accent transition-colors w-full md:w-auto">
-                  Manage Batch
+                <button 
+                  onClick={() => setShowAssignModal(true)}
+                  className="bg-black text-white px-6 py-2 font-display text-xs uppercase tracking-widest hover:bg-accent transition-colors w-full md:w-auto brutalist-border shadow-[4px_4px_0px_0px_#ff5c00] active:translate-x-1 active:translate-y-1 active:shadow-none"
+                >
+                  Assign Student
                 </button>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {batch.students.map((student) => (
+                {/* Mocking students for display since batch model doesn't have direct linkage yet */}
+                {[].map((student: any) => (
                   <div 
                     key={student.id}
                     className="group border-2 border-black bg-white p-6 space-y-6 hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all relative overflow-hidden"
@@ -173,9 +273,7 @@ export default function RosterPage() {
                           {student.name}
                         </h3>
                       </div>
-                      <button className="p-1 hover:bg-sand-100 rounded-full transition-colors">
-                        <MoreVertical className="w-5 h-5" />
-                      </button>
+                      <ActionMenu studentId={student.id} />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 relative z-10">
@@ -194,7 +292,7 @@ export default function RosterPage() {
                           <span className={cn(
                             "px-2 py-0.5 border font-display text-[8px] uppercase tracking-widest font-bold",
                             student.payment === "paid" ? "bg-green-100 text-green-800 border-green-200" : 
-                            student.payment === "partial" ? "bg-blue-100 text-blue-800 border-blue-200" :
+                            student.payment === "partial" ? "bg-mj-yellow text-black border-black" :
                             "bg-red-100 text-red-800 border-red-200"
                           )}>
                             {student.payment}
@@ -211,13 +309,16 @@ export default function RosterPage() {
                         Absent
                       </button>
                     </div>
-
-                    {/* Decorative element */}
-                    <div className="absolute -right-4 -bottom-4 w-12 h-12 border-2 border-black/5 rounded-full pointer-events-none" />
                   </div>
                 ))}
 
-                <button className="border-2 border-black border-dashed p-6 flex flex-col items-center justify-center gap-4 opacity-40 hover:opacity-100 hover:bg-white hover:border-solid transition-all group">
+                <button 
+                  onClick={() => {
+                    setAssignForm({ ...assignForm, batchId: batch.id });
+                    setShowAssignModal(true);
+                  }}
+                  className="border-2 border-black border-dashed p-6 flex flex-col items-center justify-center gap-4 opacity-40 hover:opacity-100 hover:bg-white hover:border-solid transition-all group"
+                >
                   <div className="w-12 h-12 rounded-full border-2 border-black flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all">
                     <span className="text-2xl">+</span>
                   </div>

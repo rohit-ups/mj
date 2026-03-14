@@ -53,7 +53,7 @@ export default function DashboardHome() {
       <div className="border-2 border-black bg-white">
         <div className="p-4 border-b-2 border-black flex justify-between items-center">
           <h2 className="font-display text-xl uppercase tracking-tight">Recent Bookings</h2>
-          <Link href="/bookings" className="font-display text-xs uppercase tracking-widest hover:text-accent transition-colors">View All</Link>
+          <Link to="/bookings" className="font-display text-xs uppercase tracking-widest hover:text-accent transition-colors">View All</Link>
         </div>
         <div className="divide-y-2 divide-black">
           {[1, 2, 3, 4, 5].map((i) => (
