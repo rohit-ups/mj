@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @theme {
   --font-display: "Syne", serif;
@@ -16,11 +14,14 @@
   --mj-accent: #ff5c00;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: #fbf8f1;
-  min-height: 100vh;
-  overflow-x: hidden;
+@layer base {
+  body {
+    color: rgb(var(--foreground-rgb));
+    background-color: #fbf8f1;
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: var(--font-sans);
+  }
 }
 
 .grain {
