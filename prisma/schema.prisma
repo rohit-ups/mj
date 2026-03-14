@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+  seed     = "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Booking {
+  id            String        @id @default(uuid())
+  customerName  String
+  customerEmail String
+  startDate     DateTime
+  endDate       DateTime
+  status        BookingStatus @default(pending)
+  paymentStatus PaymentStatus @default(pending)
+  totalPrice    Float
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  courseId      String?
+  stayOptionId  String?
+  stayOption    StayOption?   @relation(fields: [stayOptionId], references: [id])
+  course        Course?       @relation(fields: [courseId], references: [id])
+}
+
+model Course {
+  id          String    @id @default(uuid())
+  name        String
+  description String
+  price       Float
+  duration    Int
+  maxStudents Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  bookings    Booking[]
+}
+
+model StayOption {
+  id            String    @id @default(uuid())
+  name          String
+  description   String
+  pricePerNight Float
+  maxGuests     Int
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  propertyId    String?
+  bookings      Booking[]
+  property      Property? @relation(fields: [propertyId], references: [id])
+}
+
+model Property {
+  id          String       @id @default(uuid())
+  name        String
+  address     String
+  description String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  stayOptions StayOption[]
+}
+
+model Batch {
+  id           String      @id @default(uuid())
+  name         String
+  startDate    DateTime
+  endDate      DateTime
+  maxCapacity  Int
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  instructorId String?
+  instructor   Instructor? @relation(fields: [instructorId], references: [id])
+}
+
+model Instructor {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  phone     String?
+  specialty String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  batches   Batch[]
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  cancelled
+}
+
+enum PaymentStatus {
+  pending
+  paid
+  failed
+  refunded
+}
