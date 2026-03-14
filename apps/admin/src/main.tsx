@@ -39,8 +39,8 @@ const DashboardLayout = () => {
     <div className="flex h-screen overflow-hidden relative bg-sand-50 font-sans antialiased selection:bg-accent selection:text-white">
       <div className="grain pointer-events-none fixed inset-0 z-[9999] opacity-[0.05]" />
       <Sidebar />
-      <main className="flex-1 flex flex-col relative min-w-0 overflow-y-auto h-full">
-        {children || <Outlet />}
+      <main className="flex-1 flex flex-col relative min-w-0 overflow-y-auto h-full text-mj-black">
+        <Outlet />
       </main>
     </div>
   );
