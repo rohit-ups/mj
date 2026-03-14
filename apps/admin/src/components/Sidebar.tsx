@@ -12,25 +12,25 @@ const sections = [
   {
     title: "Operations",
     items: [
-      { name: "Dashboard", href: "/", icon: LayoutDashboard },
-      { name: "Bookings", href: "/bookings", icon: Calendar },
-      { name: "Batches", href: "/batches", icon: Users },
-      { name: "Roster", href: "/roster", icon: Users },
+      { name: "Dashboard", to: "/", icon: LayoutDashboard },
+      { name: "Bookings", to: "/bookings", icon: Calendar },
+      { name: "Batches", to: "/batches", icon: Users },
+      { name: "Roster", to: "/roster", icon: Users },
     ]
   },
   {
     title: "Management",
     items: [
-      { name: "Packages", href: "/packages", icon: Package },
-      { name: "Properties", href: "/properties", icon: Home },
-      { name: "Instructors", href: "/instructors", icon: Users },
+      { name: "Packages", to: "/packages", icon: Package },
+      { name: "Properties", to: "/properties", icon: Home },
+      { name: "Instructors", to: "/instructors", icon: Users },
     ]
   },
   {
     title: "Content",
     items: [
-      { name: "FAQs", href: "/faqs", icon: HelpCircle },
-      { name: "Site Settings", href: "/settings", icon: Settings },
+      { name: "FAQs", to: "/faqs", icon: HelpCircle },
+      { name: "Site Settings", to: "/settings", icon: Settings },
     ]
   }
 ];
@@ -77,11 +77,11 @@ export function Sidebar() {
               </h3>
               <div className="space-y-1">
                 {section.items.map((item) => {
-                  const isActive = pathname === item.href;
+                  const isActive = pathname === item.to;
                   return (
                     <Link
                       key={item.name}
-                      to={item.href}
+                      to={item.to}
                       onClick={() => setIsOpen(false)}
                       className={cn(
                         "flex items-center gap-3 px-4 py-2 font-display text-xs uppercase tracking-widest transition-all border-2",

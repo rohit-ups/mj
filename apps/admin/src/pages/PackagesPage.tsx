@@ -66,8 +66,8 @@ export default function PackagesPage() {
     }
   };
 
-  const filteredPackages = packages.filter(p => 
-    p.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredPackages = (packages || []).filter(p => 
+    p.name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   if (loading) return <div className="p-8 font-mono text-xs animate-pulse uppercase">Fetching Data Matrix...</div>;
